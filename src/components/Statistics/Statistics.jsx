@@ -1,25 +1,40 @@
-import React from 'react';
+import { StatisticsList, StatisticsData } from './Statistics.styled';
 import PropTypes from 'prop-types';
-import css from '../FeedbackBtn/FeedBack.module.css';
 
-const Statistics = ({ options, total, positivePercentage }) => {
+export const Statistics = ({
+  good,
+  neutral,
+  bad,
+  total,
+  positivePercentage,
+}) => {
   return (
-    <>
-      <p className={css.statistic__item}>Good: {options.good}</p>
-      <p className={css.statistic__item}>Neutral: {options.neutral}</p>
-      <p className={css.statistic__item}>Bad: {options.bad}</p>
-      <p className={css.statistic__item}>Total: {total}</p>
-      <p className={css.statistic__item}>
-        Positive feedback: {positivePercentage} %
-      </p>
-    </>
+    <StatisticsList>
+      <li>
+        <StatisticsData>Good: {good}</StatisticsData>
+      </li>
+      <li>
+        <StatisticsData>Neutral: {neutral}</StatisticsData>
+      </li>
+      <li>
+        <StatisticsData>Bad: {bad}</StatisticsData>
+      </li>
+      <li>
+        <StatisticsData>Total: {total}</StatisticsData>
+      </li>
+      <li>
+        <StatisticsData>
+          Positive feedback: {positivePercentage} %
+        </StatisticsData>
+      </li>
+    </StatisticsList>
   );
 };
 
 Statistics.propTypes = {
-  options: PropTypes.object.isRequired,
+  good: PropTypes.number.isRequired,
+  neutral: PropTypes.number.isRequired,
+  bad: PropTypes.number.isRequired,
   total: PropTypes.number.isRequired,
   positivePercentage: PropTypes.number.isRequired,
 };
-
-export default Statistics;

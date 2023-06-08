@@ -1,58 +1,70 @@
-import React from 'react';
-import { Component } from 'react';
-import FeedbackBtn from './FeedbackBtn/FeedbackBtn';
-import Section from './Section/Section';
-import Statistics from './Statistics/Statistics';
-import Notification from './Notification/Notification';
-import css from './FeedbackBtn/FeedBack.module.css';
+import { useState, useEffect } from 'react';
+import { Statistics } from 'components/Statistics/Statistics';
+import { Section } from 'components/Helpers/Section';
+import { Notification } from './Helpers/Notification';
+import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
 
-export class App extends Component {
-  state = {
+export const App = () => {
+  // const [good, setGood] = useState(0);
+  // const [neutral, setNeutral] = useState(0);
+  // const [bad, setBad] = useState(0);
+
+  const [state, setState] = useState({
     good: 0,
     neutral: 0,
     bad: 0,
+  });
+
+  const countTotalFeedback = () => {
+    const totalArr = Object.values(state);
+    return totalArr.reduce((acc, value) => (acc += value), 0);
   };
 
-  countFeedbackTotal = () => {
-    return Object.values(this.state).reduce((acc, value) => acc + value, 0);
+  const countPositiveFeedbackPercentage = () => {
+    return Math.round((state.good / countTotalFeedback()) * 100);
   };
 
-  positiveFeedbackHandler = () => {
-    const result = Math.round(
-      (100 / this.countFeedbackTotal()) * this.state.good
-    );
-    return result ? result : 0;
-  };
-
-  leaveFeedbackHandler = option => {
-    this.setState(prevState => ({
-      [option]: prevState[option] + 1,
+  const onLeaveFeedback = ({ target }) => {
+    setState(prevState => ({
+      ...prevState,
+      [target.name]: prevState[target.name] + 1,
     }));
   };
 
-  render() {
-    return (
-      <div className={css.container}>
-        <Section title="Please leave feedback">
-          <FeedbackBtn
-            options={this.state}
-            leaveFeedbackHandler={this.leaveFeedbackHandler}
-          />
-        </Section>
+  return (
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 40,
+        color: '#010101',
+      }}
+    >
+      <Section title="Please live feedback">
+        <FeedbackOptions
+          options={Object.keys(state)}
+          onLeaveFeedback={onLeaveFeedback}
+        />
+      </Section>
 
-        <Section title="Statistics">
-          {this.countFeedbackTotal() ? (
-            <Statistics
-              className={css.statistic__item}
-              options={this.state}
-              total={this.countFeedbackTotal()}
-              positivePercentage={this.positiveFeedbackHandler()}
-            />
-          ) : (
-            <Notification message="We have not feedback else((( You can do it first!!!)))" />
-          )}
-        </Section>
-      </div>
-    );
-  }
-}
+      <Section title="Statistics">
+        {isNaN(countPositiveFeedbackPercentage()) && (
+          <Notification message="There is no feedback" />
+        )}
+
+        {!isNaN(countPositiveFeedbackPercentage()) && (
+          <Statistics
+            good={state.good}
+            neutral={state.neutral}
+            bad={state.bad}
+            total={countTotalFeedback()}
+            positivePercentage={countPositiveFeedbackPercentage()}
+          />
+        )}
+      </Section>
+    </div>
+  );
+};
