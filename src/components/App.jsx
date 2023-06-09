@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Statistics } from 'components/Statistics/Statistics';
 import { Section } from 'components/Helpers/Section';
 import { Notification } from './Helpers/Notification';
